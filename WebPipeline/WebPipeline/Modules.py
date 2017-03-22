@@ -112,5 +112,5 @@ modules.add(Module("A2",[A2Vocab1, A2Grammar1],"Intermediate level assignments f
 #print(modules.find("test").name)
 
 injector = Injector(modules)
-injector.overrideModule(mockeries.MockDispenser())
+#injector.overrideModule(mockeries.MockDispenser())
 grader = Grader(injector)

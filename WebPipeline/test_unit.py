@@ -41,7 +41,7 @@ class Unittest_Grader(unittest.TestCase):
 
 class Unittest_flask(unittest.TestCase):
   def setUp(self):
-    Modules.injector.overrideModule(MockDispenser())
+    Modules.injector.overrideModule(MockModule())
     self.app = app.test_client()
     self.app.secret_key = os.urandom(24)
     self.app.testing = True
@@ -110,6 +110,14 @@ class Unittest_flask(unittest.TestCase):
       session['score'] = [15,6]
     result = self.app.get('/results')
     self.assertEqual(result.status_code, 200)
+
+  def test_clear_removesValues(self):
+    with self.app.session_transaction() as session:
+      session['currentScore'] = [2,3]
+      oldSession = session['currentScore']
+    result = self.app.get('/clearSessionStorage')
+    with self.app.session_transaction() as session:
+      self.assertNotEqual(session['currentScore'], oldSession)
 
   def test_clear_load(self):
     result = self.app.get('/clearSessionStorage')

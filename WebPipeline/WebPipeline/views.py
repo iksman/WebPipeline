@@ -78,7 +78,6 @@ def assignment(result=None,word=None):
           if result == 'True':
             setResult = ["Good job!","You guessed '" + word + "' correctly!"]
         else:
-          print("fuck6")
           setResult = ["Start!","Good luck on the test!"]
         return render_template(
           'assignment.html',
