@@ -103,10 +103,9 @@ A2Grammar1 = Assignment(
 #Assignment implementation ends here
 #Module creation begins here
 
-modules = ModuleDispenser()
+modules = ModuleDispenser()#[A1Vocab1,A1Grammar1]
 modules.add(Module("A1",[A1Vocab1,A1Grammar1],"Entry level assignments, essentials of the english language. Assignments of this level include vocabulary and grammar exercises"))
 modules.add(Module("A2",[A2Vocab1, A2Grammar1],"Intermediate level assignments for the experienced english language practicioner. Assignments of this level include: vocabulary and grammar exercises"))
-
 #Module creation ends here
 
 #print(modules.find("test").name)

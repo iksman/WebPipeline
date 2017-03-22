@@ -64,7 +64,6 @@ def setAssignment(name,type):
   return redirect("/404")
 
 @app.route('/assignment')
-@app.route('/assignment')
 @app.route('/assignment/<result>/<word>')
 def assignment(result=None,word=None):
   if 'currentAssignment' in session:
@@ -73,7 +72,6 @@ def assignment(result=None,word=None):
     if (Modules.injector.getModule().find(cur[0]) != False 
       and Modules.injector.getModule().find(cur[0]).find(cur[1]) != False):
       if session['currentAssignment'][2] != -1:
-        
         if result != None and word != None:
           setResult = ["Too bad!","You guessed '" + word + "', but it was '" + Modules.injector.getModule().find(cur[0]).find(cur[1]).data[cur[2]-1][1] + "'"]
           if result == 'True':
