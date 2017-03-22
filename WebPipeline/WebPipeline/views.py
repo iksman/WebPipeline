@@ -26,8 +26,11 @@ def home():
         year=datetime.now().year,
     )
    
-@app.route("/404")
 @app.errorhandler(404)
+def reroute404(e=None):
+  return redirect("/404")
+
+@app.route("/404")
 def err404(e=None):
   return render_template(
     "404.html",
@@ -52,33 +55,42 @@ def module(name):
 
 @app.route('/check/<name>/<type>')
 def setAssignment(name,type):
-  session['currentScore'] = [0,0]
-  session['currentAssignment'] = [name,type,0]
-  session.modified = True
-  return redirect("/assignment")
+  if (Modules.injector.getModule().find(name) != False 
+      and Modules.injector.getModule().find(name).find(type) != False):
+    session['currentScore'] = [0,0]
+    session['currentAssignment'] = [name,type,0]
+    session.modified = True
+    return redirect("/assignment")
+  return redirect("/404")
 
 @app.route('/assignment')
 @app.route('/assignment')
 @app.route('/assignment/<result>/<word>')
 def assignment(result=None,word=None):
   if 'currentAssignment' in session:
-    if session['currentAssignment'][2] != -1:
-      cur = session['currentAssignment']
-      if result != None and word != None:
-        setResult = ["Too bad!","You guessed '" + word + "', but it was '" + Modules.injector.getModule().find(cur[0]).find(cur[1]).data[cur[2]-1][1] + "'"]
-        if result == 'True':
-          setResult = ["Good job!","You guessed '" + word + "' correctly!"]
+    cur = session['currentAssignment']
+    if (Modules.injector.getModule().find(cur[0]) != False 
+      and Modules.injector.getModule().find(cur[0]).find(cur[1]) != False):
+      if session['currentAssignment'][2] != -1:
+        
+        if result != None and word != None:
+          setResult = ["Too bad!","You guessed '" + word + "', but it was '" + Modules.injector.getModule().find(cur[0]).find(cur[1]).data[cur[2]-1][1] + "'"]
+          if result == 'True':
+            setResult = ["Good job!","You guessed '" + word + "' correctly!"]
+        else:
+          print("fuck6")
+          setResult = ["Start!","Good luck on the test!"]
+        return render_template(
+          'assignment.html',
+          result=setResult,
+          item=Modules.injector.getModule().find(cur[0]).find(cur[1]).data[cur[2]],
+          titles=Modules.injector.getModule().find(cur[0]).find(cur[1]).description,
+          year=datetime.now().year
+          )
       else:
-        setResult = ["Start!","Good luck on the test!"]
-      return render_template(
-        'assignment.html',
-        result=setResult,
-        item=Modules.injector.getModule().find(cur[0]).find(cur[1]).data[cur[2]],
-        titles=Modules.injector.getModule().find(cur[0]).find(cur[1]).description,
-        year=datetime.now().year
-        )
+        return redirect("/results")
     else:
-      return redirect("/results")
+      session.pop("currentAssignment")
   return redirect("/")
 #@app.route('/module/')
 #def redirectHome():
