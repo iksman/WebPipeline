@@ -69,6 +69,7 @@ def setAssignment(name,type):
 def assignment(result=None,word=None):
   if 'currentAssignment' in session:
     cur = session['currentAssignment']
+    #print(Modules.injector.getModule().module[0].name)
     if (Modules.injector.getModule().find(cur[0]) != False 
       and Modules.injector.getModule().find(cur[0]).find(cur[1]) != False):
       if session['currentAssignment'][2] != -1:

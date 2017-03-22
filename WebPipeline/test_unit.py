@@ -41,7 +41,7 @@ class Unittest_Grader(unittest.TestCase):
 
 class Unittest_flask(unittest.TestCase):
   def setUp(self):
-    Modules.injector.overrideModule(MockModule())
+    Modules.injector.overrideModule(MockDispenser())
     self.app = app.test_client()
     self.app.secret_key = os.urandom(24)
     self.app.testing = True
