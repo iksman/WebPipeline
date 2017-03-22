@@ -1,5 +1,7 @@
 import unittest
-from WebPipeline import Modules
+from flask import Flask
+from WebPipeline import *
+from mockeries import *
 
 class Unittest_Dispenser(unittest.TestCase):
   def setUp(self):
@@ -30,7 +32,7 @@ class Unittest_Module(unittest.TestCase):
 
 class Unittest_Grader(unittest.TestCase):
   def setUp(self):
-    self.module = Modules.Grader(MockDispenser())
+    self.module = Modules.Grader(MockInjector())
   
   def test_find(self):
     self.assertTrue(self.module.grade(["test","testcab1",0],"kaak"))
@@ -38,34 +40,26 @@ class Unittest_Grader(unittest.TestCase):
   def test_find_wrongValue(self):
     self.assertFalse(self.module.grade(["test","testcab1",0],"Verkeerde value"))
 
+class Unittest_flask(unittest.TestCase):
+  def setUp(self):
+    Modules.injector.overrideModule(MockDispenser())
+    self.app = app.test_client()
+    self.app.testing = True
+
+  def test_homepage_load(self):
+      result = self.app.get('/')
+      self.assertEqual(result.status_code,200)
+
+  def test_correctmodule_load(self):
+      result = self.app.get('/module/test')
+      self.assertEqual(result.status_code,200)
+
+  def test_wrongmodule_load(self):
+      result = self.app.get('/module/Verkeerde value')
+      self.assertNotEqual(result.status_code,200)
+
 if __name__ == '__main__':
   unittest.main()
 
-class MockAssignment:
-  def __init__(self):
-    self.data = [["koek","kaak"]]
-    self.name = "testcab1"
-    self.desc = "testen"
 
-class MockModule:
-  def __init__(self):
-    self.name = "test"
-    self.data = [MockAssignment()]
-    self.description = "testing"
-  def find(self,name):
-    if name == "testcab1":
-      return self.data[0]
-    else:
-      return False
-
-class MockDispenser:
-  def __init__(self):
-    self.module = [MockModule()]
-  def add(self,module):
-    pass
-  def find(self,name):
-    if name == "test":
-      return self.module[0]
-    else:
-      return False
   

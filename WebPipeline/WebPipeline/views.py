@@ -11,8 +11,8 @@ from WebPipeline import app, Modules
 
 @app.route('/')
 @app.route('/home')
-@app.errorhandler(404)
-def home(e=None):
+
+def home():
     
     if 'score' in session:
       score = session['score']
@@ -22,10 +22,17 @@ def home(e=None):
     """Renders the home page."""
     return render_template(
         'index.html',
-        items=Modules.modules.module,
+        items=Modules.injector.getModule().module,
         year=datetime.now().year,
     )
-    
+   
+@app.route("/404")
+@app.errorhandler(404)
+def err404(e=None):
+  return render_template(
+    "404.html",
+    year=datetime.now().year
+  )
 
 
 @app.route('/module/<name>')
@@ -33,15 +40,15 @@ def module(name):
   isBusy = [False,None]
   if 'currentAssignment' in session:
     isBusy = [True,session['currentAssignment']]
-  if Modules.modules.find(name) != False:
+  if Modules.injector.getModule().find(name) != False:
     return render_template(
           'module.html',
           level=name,
-          items=Modules.modules.find(name).data,
+          items=Modules.injector.getModule().find(name).data,
           isBusy=isBusy,
           year=datetime.now().year,
     )
-  return redirect("/")
+  return redirect("/404")
 
 @app.route('/check/<name>/<type>')
 def setAssignment(name,type):
@@ -58,7 +65,7 @@ def assignment(result=None,word=None):
     if session['currentAssignment'][2] != -1:
       cur = session['currentAssignment']
       if result != None and word != None:
-        setResult = ["Too bad!","You guessed '" + word + "', but it was '" + Modules.modules.find(cur[0]).find(cur[1]).data[cur[2]-1][1] + "'"]
+        setResult = ["Too bad!","You guessed '" + word + "', but it was '" + Modules.injector.getModule().find(cur[0]).find(cur[1]).data[cur[2]-1][1] + "'"]
         if result == 'True':
           setResult = ["Good job!","You guessed '" + word + "' correctly!"]
       else:
@@ -66,8 +73,8 @@ def assignment(result=None,word=None):
       return render_template(
         'assignment.html',
         result=setResult,
-        item=Modules.modules.find(cur[0]).find(cur[1]).data[cur[2]],
-        titles=Modules.modules.find(cur[0]).find(cur[1]).description,
+        item=Modules.injector.getModule().find(cur[0]).find(cur[1]).data[cur[2]],
+        titles=Modules.injector.getModule().find(cur[0]).find(cur[1]).description,
         year=datetime.now().year
         )
     else:
@@ -90,10 +97,11 @@ def gradeAssignment(inp):
       session['currentScore'][1] += 1
       session['score'][1] += 1
 
-    if len(Modules.modules.find(cur[0]).find(cur[1]).data) - 1 >= cur[2] + 1: #If reached end of list
+    if len(Modules.injector.getModule().find(cur[0]).find(cur[1]).data) - 1 >= cur[2] + 1: #If reached end of list
       session['currentAssignment'][2] += 1
     else:
-      session['currentAssignment'][2] = -1 #Done with exercise
+      session.pop("currentAssignment",None) #Done with exercise
+      return redirect("/results")
     session.modified = True
     
     return redirect("/assignment/" + str(result) + "/" + inp)
@@ -105,8 +113,6 @@ def results():
     session['currentScore'] = [0,0]
   if 'score' not in session:
     session['score'] = [0,0,0]
-
-    
   return render_template(
     'result.html',
     previous=session['currentScore'],

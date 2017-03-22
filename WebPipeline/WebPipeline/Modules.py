@@ -1,3 +1,4 @@
+import mockeries
 class Module:
   def __init__(self,name,data,description):
     self.data = data
@@ -27,15 +28,24 @@ class ModuleDispenser:
     return False
 
 class Grader:
-  def __init__(self,modules):
-    self.modules = modules
+  def __init__(self,injector):
+    self.injector = injector
 
   def grade(self,cur,inp):
     #print(cur)
-    if self.modules.find(cur[0]).find(cur[1]).data[cur[2]][1].lower() == inp.lower():
+    if self.injector.getModule().find(cur[0]).find(cur[1]).data[cur[2]][1].lower() == inp.lower():
       return True
     else:
       return False
+
+class Injector: #Allows mockdispensers to go into flask
+  def __init__(self,Module):
+    self.module = Module
+  def overrideModule(self,Module):
+    self.module = Module
+  def getModule(self):
+    return self.module
+
 
 #Put your assignments here
 A1Vocab1 = Assignment(
@@ -90,14 +100,17 @@ A2Grammar1 = Assignment(
    "grammar 1",
    ["Sentence with dutch hint","Word"])
 
-#Module ends here
-
-
+#Assignment implementation ends here
+#Module creation begins here
 
 modules = ModuleDispenser()
 modules.add(Module("A1",[A1Vocab1,A1Grammar1],"Entry level assignments, essentials of the english language. Assignments of this level include vocabulary and grammar exercises"))
 modules.add(Module("A2",[A2Vocab1, A2Grammar1],"Intermediate level assignments for the experienced english language practicioner. Assignments of this level include: vocabulary and grammar exercises"))
-#modules.add(Module("test2",[1,2],"testing, in other words, is fucked"))
+
+#Module creation ends here
 
 #print(modules.find("test").name)
-grader = Grader(modules)
+
+injector = Injector(modules)
+injector.overrideModule(mockeries.MockDispenser())
+grader = Grader(injector)

@@ -30,7 +30,13 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="mockeries.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="runserver.py" />
+    <Compile Include="test_integration.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="WebPipeline\Modules.py">
       <SubType>Code</SubType>
     </Compile>
@@ -73,6 +79,7 @@
     <Content Include="WebPipeline\static\scripts\respond.min.js" />
     <Content Include="WebPipeline\static\scripts\_references.js" />
     <Content Include="WebPipeline\templates\about.html" />
+    <Content Include="WebPipeline\templates\404.html" />
     <Content Include="WebPipeline\templates\result.html" />
     <Content Include="WebPipeline\templates\contact.html" />
     <Content Include="WebPipeline\templates\assignment.html" />
