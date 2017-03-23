@@ -5,6 +5,8 @@ from datetime import datetime
 from flask import render_template, session, redirect
 from WebPipeline import app, Modules
 
+version = "1.0.0"
+
 #score: [Right, Wrong, Exercises completed]
 #currentScore = [Right, Wrong]
 #currentAssignment
@@ -141,11 +143,13 @@ def clear():
 @app.route('/about')
 def about():
     """Renders the about page."""
+    global version
     return render_template(
         'about.html',
         title='About',
         year=datetime.now().year,
-        message='Loughton Languages suite 1.0'
+        message='Loughton Languages suite',
+        version=version
     )
 
 
