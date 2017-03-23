@@ -68,8 +68,8 @@ A1Vocab1 = Assignment(
 
 A1Grammar1 = Assignment(
   [["The lost fish _____[zijn] found yesterday","was"],
-   ["In december, I skip town to ____[bezoeken] my nephew.","visit"],
-   ["My nickname used to be Beefboy, nowadays it ____[zijn] Teflon","is"]],
+   ["Last december, we have ____[bezoeken] my nephew.","visited"],
+   ["My dog used to have a lot of fur, nowadays it ____[zijn] nearly bald.","is"]],
    
    "grammar 1",
    ["Sentence with dutch hint","Word"])

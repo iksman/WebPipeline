@@ -3,13 +3,12 @@ import unittest
 from WebPipeline import *
 from mockeries import *
 
-class Test_integration(unittest.TestCase):
+class integrationTest(unittest.TestCase):
   def setUp(self):
     self.injector = Modules.injector
     self.name = []
     for item in self.injector.getModule().module:
       self.name += [item.name]      
-    self.assignment = self.injector.getModule().module[0].data[0].name
     self.app = app.test_client()
     self.app.secret_key = os.urandom(24)
     self.app.testing = True
